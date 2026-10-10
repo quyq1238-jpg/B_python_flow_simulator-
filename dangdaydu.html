@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animation Lưu Đồ Thuật Toán - Dạng Đầy Đủ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f9f9f9;
+            margin-top: 50px;
+        }
+        .container {
+            position: relative;
+            width: 480px;
+            height: 450px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        #btn-true { background-color: #00a885; }
+        #btn-true:hover { background-color: #00876b; }
+        #btn-false { background-color: #e74c3c; }
+        #btn-false:hover { background-color: #c0392b; }
+
+        /* Chấm đỏ di chuyển */
+        #dot {
+            width: 14px;
+            height: 14px;
+            background-color: red;
+            border-radius: 50%;
+            position: absolute;
+            top: 23px; /* Vị trí bắt đầu y */
+            left: 173px; /* Vị trí bắt đầu x */
+            transition: all 1s linear; 
+            z-index: 10;
+            box-shadow: 0 0 10px red;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Chấm đỏ để chạy animation -->
+        <div id="dot"></div>
+
+        <!-- SVG vẽ lại lưu đồ -->
+        <svg width="480" height="450">
+            <defs>
+                <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#333" />
+                </marker>
+            </defs>
+
+            <!-- Mũi tên vào -->
+            <line x1="180" y1="30" x2="180" y2="80" stroke="#333" stroke-width="2" marker-end="url(#arrow)" />
+
+            <!-- Hình thoi: Điều kiện -->
+            <polygon points="180,80 300,120 180,160 60,120" fill="#00a885" />
+            <text x="180" y="125" fill="white" font-size="18" font-weight="bold" text-anchor="middle">&lt;Điều kiện&gt;</text>
+
+            <!-- Mũi tên ĐÚNG -->
+            <line x1="180" y1="160" x2="180" y2="230" stroke="#333" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="195" y="195" fill="#333" font-size="16">Đúng</text>
+
+            <!-- Hình chữ nhật: Khối lệnh 1 -->
+            <rect x="95" y="230" width="170" height="60" fill="#f4ed7c" />
+            <text x="180" y="267" fill="#111" font-size="18" text-anchor="middle">Khối lệnh 1</text>
+
+            <!-- Mũi tên SAI (vòng qua phải) -->
+            <polyline points="300,120 380,120 380,230" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="320" y="110" fill="#333" font-size="16">Sai</text>
+
+            <!-- Hình chữ nhật: Khối lệnh 2 -->
+            <rect x="295" y="230" width="170" height="60" fill="#f4ed7c" />
+            <text x="380" y="267" fill="#111" font-size="18" text-anchor="middle">Khối lệnh 2</text>
+
+            <!-- Mũi tên từ Khối lệnh 1 xuống nhánh chính -->
+            <line x1="180" y1="290" x2="180" y2="380" stroke="#333" stroke-width="2" marker-end="url(#arrow)" />
+
+            <!-- Mũi tên từ Khối lệnh 2 gom lại -->
+            <polyline points="380,290 380,330 180,330" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrow)" />
+        </svg>
+    </div>
+
+    <div class="controls">
+        <button id="btn-true">Chạy nhánh ĐÚNG</button>
+        <button id="btn-false">Chạy nhánh SAI</button>
+    </div>
+
+    <script>
+        const dot = document.getElementById('dot');
+        let isAnimating = false;
+
+        function resetDot() {
+            dot.style.transition = 'none';
+            dot.style.opacity = '1';
+            dot.style.transform = 'translate(0px, 0px)'; // Về đỉnh
+            void dot.offsetWidth;
+        }
+
+        async function animateTrue() {
+            if (isAnimating) return;
+            isAnimating = true;
+            resetDot();
+
+            dot.style.transition = 'transform 1s linear';
+            // Bước 1: Đi vào điều kiện
+            dot.style.transform = 'translate(0px, 97px)'; 
+            
+            await new Promise(r => setTimeout(r, 1000));
+            // Bước 2: Đi xuống khối lệnh 1
+            dot.style.transform = 'translate(0px, 237px)'; 
+
+            await new Promise(r => setTimeout(r, 1000));
+            // Bước 3: Đi ra ngoài
+            dot.style.transform = 'translate(0px, 357px)'; 
+
+            await new Promise(r => setTimeout(r, 1000));
+            dot.style.opacity = '0';
+            isAnimating = false;
+        }
+
+        async function animateFalse() {
+            if (isAnimating) return;
+            isAnimating = true;
+            resetDot();
+
+            dot.style.transition = 'transform 1s linear';
+            // Bước 1: Đi vào điều kiện
+            dot.style.transform = 'translate(0px, 97px)'; 
+            
+            await new Promise(r => setTimeout(r, 1000));
+            // Bước 2: Đi ngang sang phải (nhánh Sai)
+            dot.style.transform = 'translate(200px, 97px)'; 
+
+            await new Promise(r => setTimeout(r, 1000));
+            // Bước 3: Đi xuống Khối lệnh 2
+            dot.style.transform = 'translate(200px, 237px)'; 
+
+            await new Promise(r => setTimeout(r, 1000));
+            // Bước 4: Đi xuống tiếp và vòng sang trái
+            dot.style.transition = 'transform 0.5s linear';
+            dot.style.transform = 'translate(200px, 307px)'; 
+            
+            await new Promise(r => setTimeout(r, 500));
+            dot.style.transform = 'translate(0px, 307px)'; 
+
+            await new Promise(r => setTimeout(r, 500));
+            // Bước 5: Thoát ra ngoài cùng đường chính
+            dot.style.transform = 'translate(0px, 357px)'; 
+
+            await new Promise(r => setTimeout(r, 500));
+            dot.style.opacity = '0';
+            isAnimating = false;
+        }
+
+        document.getElementById('btn-true').addEventListener('click', animateTrue);
+        document.getElementById('btn-false').addEventListener('click', animateFalse);
+    </script>
+</body>
+</html>
