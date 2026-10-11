@@ -186,7 +186,8 @@ class FlowchartLayoutEngine {
       stmts.forEach(stmt => {
         if (stmt.type === 'simple') {
           let shapeType = 'process';
-          if (stmt.text.includes('input(') || stmt.text.startsWith('print(')) {
+          // Đã sửa: Dùng includes() cho cả input và print để bắt đúng I/O
+          if (stmt.text.includes('input(') || stmt.text.includes('print(')) {
             shapeType = 'io';
           }
           const node = this.createNode(shapeType, stmt.text, stmt.lineNum, stmt.text);
@@ -226,7 +227,8 @@ class FlowchartLayoutEngine {
       let last = decNode;
       ifStmt.thenBody.forEach((s, idx) => {
         if (s.type === 'simple') {
-          const nType = (s.text.includes('input(') || s.text.startsWith('print(')) ? 'io' : 'process';
+          // Đã sửa: Dùng includes() cho cả input và print
+          const nType = (s.text.includes('input(') || s.text.includes('print(')) ? 'io' : 'process';
           const n = this.createNode(nType, s.text, s.lineNum, s.text);
           if (idx === 0) this.addEdge(decNode, n, 'Đúng', 'branch_left');
           else this.addEdge(last, n);
@@ -250,7 +252,8 @@ class FlowchartLayoutEngine {
 
         let elifTrueLast = elifDecNode;
         eb.body.forEach((s, idx) => {
-          const nType = (s.text.includes('input(') || s.text.startsWith('print(')) ? 'io' : 'process';
+          // Đã sửa: Dùng includes() cho cả input và print
+          const nType = (s.text.includes('input(') || s.text.includes('print(')) ? 'io' : 'process';
           const n = this.createNode(nType, s.text, s.lineNum, s.text);
           if (idx === 0) this.addEdge(elifDecNode, n, 'Đúng', 'branch_left');
           else this.addEdge(elifTrueLast, n);
@@ -263,7 +266,8 @@ class FlowchartLayoutEngine {
       if (ifStmt.elseBody && ifStmt.elseBody.length > 0) {
         let elseLast = lastDecision;
         ifStmt.elseBody.forEach((s, idx) => {
-          const nType = (s.text.includes('input(') || s.text.startsWith('print(')) ? 'io' : 'process';
+          // Đã sửa: Dùng includes() cho cả input và print
+          const nType = (s.text.includes('input(') || s.text.includes('print(')) ? 'io' : 'process';
           const n = this.createNode(nType, s.text, s.lineNum, s.text);
           if (idx === 0) this.addEdge(lastDecision, n, 'Sai', 'branch_right');
           else this.addEdge(elseLast, n);
@@ -278,7 +282,8 @@ class FlowchartLayoutEngine {
       let last = decNode;
       ifStmt.elseBody.forEach((s, idx) => {
         if (s.type === 'simple') {
-          const nType = (s.text.includes('input(') || s.text.startsWith('print(')) ? 'io' : 'process';
+          // Đã sửa: Dùng includes() cho cả input và print
+          const nType = (s.text.includes('input(') || s.text.includes('print(')) ? 'io' : 'process';
           const n = this.createNode(nType, s.text, s.lineNum, s.text);
           if (idx === 0) this.addEdge(decNode, n, 'Sai', 'branch_right');
           else this.addEdge(last, n);
@@ -308,7 +313,8 @@ class FlowchartLayoutEngine {
       let last = decNode;
       whileStmt.body.forEach((s, idx) => {
         if (s.type === 'simple') {
-          const nType = (s.text.includes('input(') || s.text.startsWith('print(')) ? 'io' : 'process';
+          // Đã sửa: Dùng includes() cho cả input và print
+          const nType = (s.text.includes('input(') || s.text.includes('print(')) ? 'io' : 'process';
           const n = this.createNode(nType, s.text, s.lineNum, s.text);
           if (idx === 0) this.addEdge(decNode, n, 'Đúng', 'straight_down');
           else this.addEdge(last, n);
@@ -341,7 +347,8 @@ class FlowchartLayoutEngine {
       let last = decNode;
       forStmt.body.forEach((s, idx) => {
         if (s.type === 'simple') {
-          const nType = (s.text.includes('input(') || s.text.startsWith('print(')) ? 'io' : 'process';
+          // Đã sửa: Dùng includes() cho cả input và print
+          const nType = (s.text.includes('input(') || s.text.includes('print(')) ? 'io' : 'process';
           const n = this.createNode(nType, s.text, s.lineNum, s.text);
           if (idx === 0) this.addEdge(decNode, n, 'Đúng', 'straight_down');
           else this.addEdge(last, n);
@@ -485,7 +492,7 @@ class SVGFlowchartRenderer {
       shape.setAttribute('y', y);
       shape.setAttribute('width', w);
       shape.setAttribute('height', h);
-      shape.setAttribute('rx', '6');
+      shape.setAttribute('rx', '0'); // Đã sửa: rx = 0 để thành hình chữ nhật góc vuông
       shape.setAttribute('fill', '#1e293b');
       shape.setAttribute('stroke', '#94a3b8');
       shape.setAttribute('stroke-width', '2.5');
